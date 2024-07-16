@@ -1,5 +1,9 @@
 # Steam Economy Enhancer
 
+This forks aims to make the trades a bit more automatic
+
+*automatically add items to the trade offer which are equal or higher for a set price
+
 A free userscript to enhance your Steam Inventory, Steam Market and Steam Tradeoffers.
 
 It adds the following features to the Steam Market:
