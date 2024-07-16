@@ -3490,7 +3490,7 @@
         // This only works with a new trade offer.
         if (!window.location.href.includes('tradeoffer/new'))
             return;
-
+    
         $('#inventory_displaycontrols').append(
             '<br/>' +
             '<div class="trade_offer_buttons">' +
