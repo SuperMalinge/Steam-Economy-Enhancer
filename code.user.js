@@ -3497,6 +3497,13 @@
             '<a class="item_market_action_button item_market_action_button_green select_all" style="margin-top:1px">' +
             '<span class="item_market_action_button_contents" style="text-transform:none">Select all from page</span>' +
             '</a>' +
+            '<a class="item_market_action_button item_market_action_button_green auto_trade" style="margin-top:1px; margin-left:5px;">' +
+            '<span class="item_market_action_button_contents" style="text-transform:none">Auto Trade</span>' +
+            '</a>' +
+            '</div>' +
+            '<div style="margin-top:10px;">' +
+            '<input type="range" id="price_threshold" min="0" max="100" step="1" value="1" style="width:200px;">' +
+            '<span id="price_threshold_value" style="margin-left:10px;">$0.01</span>' +
             '</div>');
 
         $('.select_all').on('click', '*', function() {
@@ -3509,8 +3516,35 @@
                     return;
 
                 unsafeWindow.MoveItemToTrade(it);
-            });
+
+        // Update the displayed value when the slider changes
+        $('#price_threshold').on('input', function() {
+            var value = ($(this).val() / 100).toFixed(2);
+            $('#price_threshold_value').text('$' + value);
         });
+        
+        // Auto Trade functionality
+        $('.auto_trade').on('click', function() {
+            var threshold = parseFloat($('#price_threshold').val()) / 100;
+            
+            $('.inventory_ctn:visible > .inventory_page:visible > .itemHolder:visible').each(function() {
+                var item = $(this).rgItem;
+                if (item.is_stackable || !item.tradable) {
+                    return;
+                }
+        
+                var priceElement = $('.inventory_item_price', this);
+                if (priceElement.length) {
+                    var priceText = priceElement.text().replace('$', '');
+                    var itemPrice = parseFloat(priceText);
+                    
+                    if (itemPrice >= threshold) {
+                        unsafeWindow.MoveItemToTrade($(this));
+                    }
+                }
+            });
+        });     
+    
     }
     //#endregion
 
@@ -3628,6 +3662,12 @@
         '.pagination { padding-left: 0px; }' +
         '.pagination li { display:inline-block; padding: 5px 10px;background: rgba(255, 255, 255, 0.10); margin-right: 6px; border: 1px solid #666666; }' +
         '.pagination li.active { background: rgba(255, 255, 255, 0.25); }');
+        '#price_threshold { -webkit-appearance: none; background: #2a2a2a; outline: none; opacity: 0.7; transition: opacity .2s; }' +
+        '#price_threshold:hover { opacity: 1; }' +
+        '#price_threshold::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #4CAF50; cursor: pointer; }' +
+        '#price_threshold::-moz-range-thumb { width: 20px; height: 20px; background: #4CAF50; cursor: pointer; }' +
+        '#price_threshold_value { color: #b8b6b4; }';
+                    
 
     $(document).ready(function() {
         // Make sure the user is logged in, there's not much we can do otherwise.
